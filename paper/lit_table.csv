@@ -1,0 +1,33 @@
+Authors,Method,Unit of analysis,Level fixed effects,Outcome
+Alix-Garcia and Gibbs 2017,TWFE,binary point/pixel,pixel,binary deforestation
+Alix-Garcia et al 2018,TWFE,binary point/pixel,pixel,binary deforestation
+Anderson et al. 2018,matched DID,binary point/pixel,NA,binary deforestation
+Araujo et al. 2009,TWFE using instrument,state,state,binary deforestation
+Arriagada et al. 2012,matched DID,farm,NA,binary deforestation
+Baehr et al. 2021,TWFE,binary pixel/grid cell,pixel,binary deforestation
+Baylis et al. 2012,DID,grid cell,NA,binary deforestation
+BenYishay et al. 2017,TWFE,grid cell,grid cell,binary deforestation
+Blackman 2015,matched unit FE model,binary point/pixel,county,binary deforestation
+Blackman and Villalobos 2020,matched TWFE,management unit,management unit,binary deforestation
+Blackman et al. 2017,TWFE,community,community,binary deforestation
+Blackman et al. 2018,matched TWFE,management unit,management unit,binary deforestation
+Busch et al. 2015,matched TWFE,grid cell,grid cell,binary deforestation
+Bustic et al. 2017,TWFE,binary point/pixel,pixel,binary deforestation
+Carlson et al. 2018,matched TWFE,plantation,plantation,binary deforestation
+Carlson et al. 2018 (robustness check),Cox PH DID,pixel,NA,binary deforestation
+Heilmayr and Lambin 2016,matched DID,property,NA,binary deforestation
+Herrera et al. 2019,matched regression,binary point/pixel,NA,binary deforestation
+Holland et al. 2017,matched TWFE,landowner parcel,landowner parcel,binary deforestation
+Jones and Lewis 2015 (1),matched TWFE,binary point/pixel,pixel,binary deforestation
+Jones and Lewis 2015 (2),matched TWFE,household parcel,household parcel,binary deforestation
+Jones et al. 2017,matched TWFE,household,household,binary deforestation
+Koch et al. 2018,matched DID,municipality,NA,binary deforestation
+Nolte et al. 2017, DID, NA, deforestation,
+Panlasigui et al. 2018,TWFE,binary point/pixel,pixel,binary deforestation
+Pfaff 1999,regression,county,NA,binary deforestation
+Sales et al. 2022, Cox PH DID, pixel, NA, binary deforestation
+Sanchez-Azofeifa et al. 2007,regression,grid cells,NA,binary deforestation
+Shah and Baylis 2015,DID,grid cell,NA,binary deforestation
+Sims and Alix-Garcia 2017,TWFE,locality,locality,binary deforestation
+Tabor et al. 2017,TWFE,fokontany,fokontany,binary deforestation
+Wendland et al. 2015,matched TWFE,binary point/pixel,pixel,binary deforestation

@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Conservation impact evaluation using remotely sensed data</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Alberto Garcia and Robert Heilmayr" />
+    <meta name="date" content="2021-05-28" />
+    <link href="uc_ee_may_2021_files/remark-css/default.css" rel="stylesheet" />
+    <link href="uc_ee_may_2021_files/remark-css/metropolis.css" rel="stylesheet" />
+    <link href="uc_ee_may_2021_files/remark-css/metropolis-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Conservation impact evaluation using remotely sensed data
+## UC Environmental Economics Seminar
+### Alberto Garcia and Robert Heilmayr
+### May 28, 2021
+
+---
+
+class: inverse, middle
+
+
+
+&lt;style type="text/css"&gt;
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+&lt;/style&gt;
+
+&lt;style type="text/css"&gt;
+.highlight-last-item &gt; ul &gt; li, 
+.highlight-last-item &gt; ol &gt; li {
+  opacity: 0.5;
+}
+.highlight-last-item &gt; ul &gt; li:last-of-type,
+.highlight-last-item &gt; ol &gt; li:last-of-type {
+  opacity: 1;
+}
+&lt;/style&gt;
+
+
+
+
+# Motivation
+
+---
+# Motivation
+
+.pull-left[
+### Remotely sensed land cover data has facilitated new insights into:
+- Corruption and illegal deforestation  
+(e.g. Burgess et al., 2012)
+
+- Environmental consequences of intensification  
+(e.g. Abman et al., 2020)
+
+- Effectiveness of environmental policies  
+(e.g. Jayachandran et al., 2016)
+
+- Economic impact of tenure reform  
+(e.g. Jordán and Heilmayr, 2021)
+]
+
+--
+.pull-right[
+### Papers using econometric methods&lt;sup&gt;†&lt;/sup&gt; that cite Hansen et al., 2013
+
+&lt;img src="uc_ee_may_2021_files/figure-html/bar1-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+†  Google scholar search string: (econometric* or "causal inference" or "impact evaluation" or "fixed effects" or "regression discontinuity" or "instrumental variable")
+]
+
+]
+
+
+---
+# Data setting
+.pull-left[
+&lt;img src="../presentations/figs/initial_forest.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+
+.pull-right[
+## Initial forested landscape
+
+&lt;img src="../presentations/figs/defor_3_lgd.png" width="100%" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+# Data setting
+.pull-left[
+&lt;img src="../presentations/figs/defor_2.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+
+.pull-right[
+## Year 1 deforestation
+&lt;img src="../presentations/figs/defor_3_lgd.png" width="100%" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+# Data setting
+.pull-left[
+&lt;img src="../presentations/figs/defor_3.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+
+.pull-right[
+## Year 2 deforestation
+&lt;img src="../presentations/figs/defor_3_lgd.png" width="100%" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+
+---
+# Data setting
+.pull-left[
+&lt;img src="../presentations/figs/defor_4.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+
+.pull-right[
+## Year 3 deforestation
+&lt;img src="../presentations/figs/defor_3_lgd.png" width="100%" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+# Data setting
+.pull-left[
+&lt;img src="../presentations/figs/defor_5.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+
+.pull-right[
+## Year 4 deforestation
+&lt;img src="../presentations/figs/defor_3_lgd.png" width="100%" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+# Data setting
+.pull-left[
+&lt;img src="../presentations/figs/defor_5.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+### Data characteristics
+- Wall to wall data
+- Fine spatial scales
+- Relatively long time series
+]
+
+---
+# Data setting
+.pull-left[
+&lt;img src="../presentations/figs/defor_5.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+### Data characteristics
+- Wall to wall data
+- Fine spatial scales
+- Relatively long time series
+- Binary
+- Irreversible
+]
+
+---
+# Data setting
+.pull-left[
+&lt;img src="../presentations/figs/defor_5.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+### Data characteristics
+- Wall to wall data
+- Fine spatial scales
+- Relatively long time series
+- Binary
+- Irreversible
+
+### Do traditional econometric models generate unbiased estimates in this setting?
+
+]
+
+---
+# Data setting
+.pull-left[
+&lt;img src="../presentations/figs/defor_5.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+### Data characteristics
+- Wall to wall data
+- Fine spatial scales
+- Relatively long time series
+- Binary
+- Irreversible
+
+### Do traditional econometric models generate unbiased estimates in this setting?
+- Importance of scale (Avelino et al., 2016)
+- Nonclassical measurement error (Jain, 2020; Alix-Garcia and Millimet, 2020)
+
+]
+
+
+---
+# Conservation policy impact evaluation
+.pull-left[
+&lt;img src="../presentations/figs/intervention.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+
+.pull-right[
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+## &lt;br /&gt;
+
+
+
+&lt;img src="../presentations/figs/intervention_lgd.png" width="75%" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+
+---
+# Conservation policy impact evaluation
+.pull-left[
+&lt;img src="../presentations/figs/intervention.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+
+.pull-right[
+
+### Researcher wants to estimate `\(ATT\)` from intervention
+
+### Follows common guidance (e.g. Jones and Lewis, 2015) and estimates a two-way fixed model:
+### `$$defor_{i,t}=\beta D_{i,t} + \gamma_i + \alpha_t + u_{i,t}$$`
+
+
+&lt;img src="../presentations/figs/intervention_lgd.png" width="75%" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+# Preview of results
+
+.pull-left[
+&lt;img src="../presentations/figs/intervention.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+
+.pull-right[
+&lt;br /&gt;
+### `$$defor_{i,t}=\beta D_{i,t} + \gamma_i + \alpha_t + u_{i,t}$$`
+
+### `\(\hat{\beta}\)` is a biased estimate of `\(ATT\)`
+
+### Multiple possible solutions
+- Aggregate fixed effects
+- Aggregate units of observation
+
+### Benefits of structuring model to match scale of decisionmaking
+]
+
+
+---
+
+layout: false
+class: inverse, middle
+# Analytical proof
+## Pixel-level, two-way fixed effects model doesn't estimate `\(ATT\)`
+
+---
+class: highlight-last-item
+
+# Proof: Pixel-level TWFE model doesn't estimate ATT
+
+## Setting
+
+--
+
+- Imagine a two-period setting `\((t=1,2)\)` with multiple points indexed by `\(i\)`.
+
+--
+
+- We observe `\(y_{i,t}\)`, a binary measure of deforestation at point `\(i\)` at time `\(t\)`.
+
+--
+
+- Some units are exposed to a policy treatment in second period `\((D_{i,t=2}=1)\)`
+
+--
+
+- Let potential outcome for each unit can be expressed as `\(y_{i,t}(D)\)`
+
+--
+
+- Unit-level treatment effect can be expressed as `\(E_i=y_{i,2}(1)-y_{i,2}(0)\)`
+
+--
+
+- We want to estimate average treatment effect on the treated `\((ATT)\)` which can be defined as:
+
+`$$ATT=\frac{1}{\eta_{i:W_i=1}}\sum_{i:W_i=1}^{N}{y_{i,2}(1)-y_{i,2}(0)}$$`
+
+---
+class: highlight-last-item
+
+# Proof: Pixel-level TWFE model doesn't estimate ATT
+
+.pull-left[
+## Data wrinkle
+Since `\(y_{i,t}\)` is an irreversible, binary outcome, it is typically&lt;sup&gt;†&lt;/sup&gt; expressed as:
+
+`$$y_{it}= \begin{cases} 
+      0 &amp; \text{the pixel has never been deforested}\\
+      1 &amp; \text{the pixel was deforested in year }t\\
+      NAN &amp; \text{the pixel was deforested in a year }&lt;t\\
+   \end{cases}$$`
+
+]
+
+.pull-right[
+&lt;img src="../presentations/figs/defor_3.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+
+.footnote[
+†  Separate proof in paper shows why this is the preferred solution.
+]
+
+
+
+---
+class: highlight-last-item
+
+# Proof: Pixel-level TWFE model doesn't estimate ATT
+
+## TWFE model:
+## `$$y_{i,t} = \alpha + \beta \times D_i \times \mathbb{1} \{t=2\}  + \gamma_i + \eta_{t=2}+ u_{i,t}$$`
+
+--
+
+##  `$$\Downarrow$$`
+
+`$$y_{i,1}=\alpha+\gamma_i+u_{i,1}$$`
+--
+`$$y_{i,2}= \begin{cases} 
+      \alpha+\beta \times D_i+\gamma_i+\eta_{t=2} + u_{i2} &amp; y_{i1}= 0\\
+      NAN &amp; y_{i1} \neq 0 
+   \end{cases}$$`
+--
+
+## `$$\Downarrow$$`
+`$$y_{i,2}-y_{i,1}= \begin{cases} 
+ \beta  \times D_i + \eta_{t=2} + \Delta u_{i} &amp; y_{i1}= 0\\
+      NAN &amp; y_{i1} \neq 0 
+   \end{cases}$$`
+
+
+---
+class: highlight-last-item
+
+# Proof: Pixel-level TWFE model doesn't estimate ATT
+
+`\(\hat{\beta}\)` (our estimate of the `\(ATT\)`) can also be expressed as a double difference:
+
+$$
+`\begin{align*}
+\hat{\beta}&amp;= \frac{1}{n_{i:D_i=1}}\sum_{i:D_i=1} (y_{i,2}-y_{i,1}) - \frac{1}{n_{i:D_i=0}}\sum_{i:D_i=0} (y_{i,2} - y_{i,1})
+\end{align*}`
+$$
+--
+
+However, this is only valid when `\(y_{i,1}=0\)`. Thus, we can restate (and shift to PO notation):
+&lt;!-- $$ --&gt;
+&lt;!-- \begin{align*} --&gt;
+&lt;!-- \hat{\beta}&amp;= \frac{1}{n_{i:D_i=1}}\sum_{i:D_i=1} (y_{i,2}-0) - \frac{1}{n_{i:D_i=0}}\sum_{i:D_i=0} (y_{i,2} - 0) --&gt;
+&lt;!-- \end{align*} --&gt;
+&lt;!-- $$ --&gt;
+$$
+`\begin{align*}
+\hat{\beta}&amp;= \frac{1}{n_{i:D_i=1}}\sum_{i:D_i=1} y_{i,2}(1) - \frac{1}{n_{i:D_i=0}}\sum_{i:D_i=0} y_{i,2}(0)
+\end{align*}`
+$$
+--
+
+Adding and subtracting `\(\frac{1}{n_{i:D_i=1}}\sum_{i:D_i=1} y_{i,2}(0)\)`:
+$$
+`\begin{align*}
+\hat{\beta}&amp;= \underbrace{\frac{1}{n_{i:D_i=1}}\sum_{i:D_i=1} \left( y_{i,2}(1)-y_{i,2}(0) \right)}_{ATT} + \underbrace{\left( \frac{1}{n_{i:D_i=1}}\sum_{i:D_i=1} y_{i,2}(0) - \frac{1}{n_{i:D_i=0}}\sum_{i:D_i=0} y_{i,2}(0) \right)}_{\text{Baseline difference in mean deforestation rates}}
+\end{align*}`
+$$
+
+---
+
+layout: false
+class: inverse, middle
+# Monte Carlo simulations 
+## Multiple alternate specifications yield unbiased estimates of `\(ATT\)`
+
+---
+class: highlight-last-item
+
+# Data generating process
+
+.pull-left[
+&lt;img src="../presentations/figs/intervention.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+
+.pull-right[
+
+&lt;br /&gt;
+
+Simulated landscape of forested pixels `\((i)\)` 
+
+Pixels are located inside properties `\((v)\)` and counties `\((c)\)`
+
+Multiple time periods `\((t)\)` divided into two even-length periods `\((t&lt;t_0 \text{ or } t \geq t_0)\)`
+
+At time `\(t_0\)`, counties are randomly assigned to treatment `\((D=1)\)`
+
+]
+
+---
+# Data generating process
+
+
+- Decision to deforest is modeled a function of a continuous, latent random variable `\((y^*_{i,v,t})\)` representing the return to clearing (Pfaff and Sanchez-Azofeifa, 2004).
+
+`$$(y^*_{i,v,t})=\psi_0 + \psi_1 D_i + \psi_2  (1 -  D_i ) 1\{  t \geq t_0  \} + \psi_3  D_i 1\{  t \geq t_0  \} + \alpha_i + \rho_v+u_{i,t}$$`
+
+
+--
+
+- "Researcher" observes binary deforestation:
+
+`\begin{align}
+ y_{i,v,t} = \begin{cases}
+      1   &amp; y^*_{i,v,t} &gt; 0 \text{ and } y^*_{i,v, \tau} \leq 0 \text{ for all } \tau&lt;t  \\
+      0   &amp;  y^*_{i,v,t} \leq 0 \text{ and } y^*_{i,v, \tau} \leq 0 \text{ for all } \tau&lt;t \\
+      NAN &amp; otherwise
+   \end{cases}
+\end{align}`
+
+--
+
+- DGP constrains `\((y^*_{i,v,t})\)` based on seven parameters:
+  - `\(baseline_0 = E[y_{i,v,t}(0) |  t&lt;t_0, D_i=0]\)`
+  - `\(baseline_1 = E[y_{i,v,t}(0) |  t&lt;t_0, D_i=1]\)`
+  - `\(trend_0 = E[y_{i,v,t}(0) |  t\geq t_0, D_i=0] - E[y_{i,v,t}(0) |  t&lt;t_0, D_i=0]\)`
+  - `\(ATT = E[y_{i,v,t}(1) - y_{i,v,t}(0) |  t\geq t_0, D_i=1]\)`
+  - `\(\alpha_i \sim N(0,\sigma_a^2)\)`
+  - `\(\rho_v \sim N(0, \sigma_p^2)\)`
+  - `\(u_{it} \sim N(0,\sigma_u^2)\)`
+
+
+---
+# Candidate econometric models
+
+.pull-left[
+### Scale of fixed effects or unit of observation
+- Pixel (e.g. Alix-Garcia et al., 2018)
+]
+
+.pull-right[
+&lt;img src="../presentations/figs/intervention.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# Candidate econometric models
+
+.pull-left[
+### Scale of fixed effects or unit of observation
+- Pixel (e.g. Alix-Garcia et al., 2018)
+- Treatment (e.g. Arriagada et al., 2012)
+]
+
+.pull-right[
+&lt;img src="../presentations/figs/treatment.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# Candidate econometric models
+
+.pull-left[
+### Scale of fixed effects or unit of observation
+- Pixel (e.g. Alix-Garcia et al., 2018)
+- Treatment (e.g. Arriagada et al., 2012)
+- County (e.g. Blackman, 2015)
+]
+
+.pull-right[
+&lt;img src="../presentations/figs/county.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+# Candidate econometric models
+
+.pull-left[
+### Scale of fixed effects or unit of observation
+- Pixel (e.g. Alix-Garcia et al., 2018)
+- Treatment (e.g. Arriagada et al., 2012)
+- County (e.g. Blackman, 2015)
+- Grid cell (e.g. BenYishay et al., 2017)
+]
+
+.pull-right[
+&lt;img src="../presentations/figs/grid.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# Candidate econometric models
+
+.pull-left[
+### Scale of fixed effects or unit of observation
+- Pixel (e.g. Alix-Garcia et al., 2018)
+- Treatment (e.g. Arriagada et al., 2012)
+- County (e.g. Blackman, 2015)
+- Grid cell (e.g. BenYishay et al., 2017)
+- Property (e.g. Heilmayr and Lambin, 2016)
+]
+
+.pull-right[
+&lt;img src="../presentations/figs/property.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+# Candidate econometric models
+
+.pull-left[
+### Scale of fixed effects or unit of observation
+- Pixel (e.g. Alix-Garcia et al., 2018)
+- Treatment (e.g. Arriagada et al., 2012)
+- County (e.g. Blackman, 2015)
+- Grid cell (e.g. BenYishay et al., 2017)
+- Property (e.g. Heilmayr and Lambin, 2016)
+
+### Functional form
+
+### Calculation of deforestation rate
+]
+
+.pull-right[
+&lt;img src="../presentations/figs/property.png" width="1200" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# Bias in TWFE model
+
+&lt;img src="../presentations/figs/twfe_0.png" width="2000" style="display: block; margin: auto;" /&gt;
+
+
+---
+# Bias in TWFE model
+
+&lt;img src="../presentations/figs/twfe_1.png" width="2000" style="display: block; margin: auto;" /&gt;
+
+---
+# Bias in TWFE model
+
+&lt;img src="../presentations/figs/twfe_2.png" width="2000" style="display: block; margin: auto;" /&gt;
+
+---
+# Bias in TWFE model
+
+&lt;img src="../presentations/figs/twfe_3.png" width="2000" style="display: block; margin: auto;" /&gt;
+
+---
+# Bias in TWFE model
+
+&lt;img src="../presentations/figs/twfe_4.png" width="2000" style="display: block; margin: auto;" /&gt;
+
+---
+# Aggregation as a solution
+
+.pull-left[
+### Aggregated fixed effects
+&lt;img src="../presentations/figs/spec_did_fe.png" width="95%" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+--
+
+.pull-right[
+### Aggregated units of observation
+&lt;img src="../presentations/figs/spec_did_agg.png" width="95%" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+# Impacts of property-level disturbances on DID
+
+&lt;img src="../presentations/figs/spec_prop_did.png" width="55%" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+# Benefits of property-level models `\((\sigma_p=0.3)\)`
+
+.pull-left[
+### Aggregated fixed effects 
+&lt;img src="../presentations/figs/spec_prop_fe.png" width="90%" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+--
+
+.pull-right[
+### Aggregated units of analysis
+&lt;img src="../presentations/figs/spec_prop_agg.png" width="90%" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+
+---
+
+layout: false
+class: inverse, middle
+# Conclusions
+
+---
+# Conclusions
+
+.pull-left[
+### Pixel-level, two-way fixed effects models do not yield expected estimand
+
+### Multiple alternate model structures provide (much less) biased estimates
+
+### Aligning model structure to scale of decisionmaking improves model performance
+]
+
+.pull-right[
+### Aggregated units of observation
+&lt;img src="../presentations/figs/spec_did_agg.png" width="95%" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+
+---
+# Extensions
+
+## Impact of weighting in presence of heterogeneous treatment effects
+
+## Comparisons to survival models
+
+## Bias stemming from non-random sample selection
+
+---
+
+layout: false
+class: inverse, middle
+# Thanks!
+Albert Garcia (albertogarcia@ucsb.edu) and Robert Heilmayr (rheilmayr@ucsb.edu)
+
+&lt;!-- --- --&gt;
+&lt;!-- # References --&gt;
+&lt;!-- ```{r refs, echo= FALSE, results = "asis"} --&gt;
+&lt;!-- PrintBibliography(myBib) --&gt;
+&lt;!-- ``` --&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
