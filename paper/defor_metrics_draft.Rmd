@@ -1191,9 +1191,7 @@ Although the new class of DID estimators effectively address concerns about stag
 
 ```{r observed-multiGT, out.width="100%", fig.cap="Observed deforestation in simulated example with multiple groups and periods.", fig.pos='H', fig.width = 9, fig.height = 5, fig.show='hold'}
 
-#knitr::include_graphics("figs/defor_multiGT.png")
-
-rate_landscape <- readRDS("results/landscape.rds")
+rate_landscape <- readRDS("results_multi/landscape.rds")
 
 ggplot(data=rate_landscape, aes(x=year, y=defor, colour=Group))+
   geom_line(size=1.5)+
@@ -1215,11 +1213,9 @@ ggplot(data=rate_landscape, aes(x=year, y=defor, colour=Group))+
 The left panel of Figure \@ref(fig:multiGT) shows that the estimators developed in @callaway2020, @gardner2021, and @borusyak2021 suffer from similar bias to TWFE regressions with pixel unit fixed effects if the pixel is used as the unit of analysis. All methods yield a treatment effect greater than or equal to 0 in all post-treatment periods, reflecting the fact that pre-treatment period deforestation rates are unaccounted for by the estimators. This is particularly  clear in the @callaway2020 estimator in which pre-treatment periods are all precisely zero, indicating that the estimator could only compute treatment effects using pixels that survived until the end of the observation period. The right panel of Figure \@ref(fig:multiGT) shows that this bias is eliminated when one uses an aggregated unit of analysis with binary treatment (e.g., county). We do not include pixel-level TWFE regressions with spatially aggregated fixed effects, because most recently developed estimators do not allow for a comparable implementation. Therefore if the researcher wants to obtain a landscape-scale interpretation, they must use an aggregated grid cell or weight the regression by the unit area. 
 
 ```{r multiGT-gen, include = FALSE} 
-#knitr::include_graphics(c("figs/pixel_multiGT.png", "figs/county_multiGT.png"))
-truth <- 
 
-county_es <- readRDS("results/county_es.rds")
-pixel_es <- readRDS("results/pixel_es.rds")%>%
+county_es <- readRDS("results_multi/county_es.rds")
+pixel_es <- readRDS("results_multi/pixel_es.rds")%>%
   filter(estimator != "Borusyak, Jaravel, Spiess (2021)")
 
 color_scale = c("TWFE" = palette$red, "Gardner (2021)" = palette$dark, "Callaway and Sant'Anna (2020)" = palette$blue, "Borusyak, Jaravel, Spiess (2021)" = palette$dark_green,  "Truth" = palette$green)
@@ -1313,8 +1309,7 @@ Finally, we examine the performance of the new DID estimators relative to a trad
 
 ```{r observed-multiGT2, out.width="100%", fig.cap="Observed deforestation in simulated example when treatment effects vary across groups and through time", fig.width = 9, fig.height = 5, fig.pos='H', fig.show='hold'}
 
-#knitr::include_graphics("figs/defor_multiGT2.png")
-het_landscape <- readRDS("results/het_landscape.rds")
+het_landscape <- readRDS("results_multi/het_landscape.rds")
 
 ggplot(data=het_landscape, aes(x=year, y=defor, colour=Group))+
   geom_line(size=1.5)+
@@ -1336,8 +1331,8 @@ Figure \@ref(fig:multiGT2) shows the event study estimates produced by each of t
 
 ```{r multiGT2-gen, include = FALSE}
 
-county_es <- readRDS("results/county_es_hetTE.rds")
-pixel_es <- readRDS("results/pixel_es_heterogTE.rds")%>%
+county_es <- readRDS("results_multi/county_es_hetTE.rds")
+pixel_es <- readRDS("results_multi/pixel_es_heterogTE.rds")%>%
   filter(estimator != "Borusyak, Jaravel, Spiess (2021)")
 
 color_scale = c("TWFE" = palette$red, "Gardner (2021)" = palette$dark, "Callaway and Sant'Anna (2020)" = palette$blue, "Borusyak, Jaravel, Spiess (2021)" = palette$dark_green,  "Truth" = palette$green)

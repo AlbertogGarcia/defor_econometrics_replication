@@ -17,36 +17,6 @@ n = 500
 
 set.seed(0930)
 
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-######## show TWFE is equivalent to dropping all pixels deforested in first period
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-base_0 = .02
-base_1 = .05
-trend = -.005
-ATT = -.01
-
-std_avp = (std_a^2+std_v^2+std_p^2)^.5
-b0 = qnorm(base_0, mean = 0, sd = std_avp)
-b1 = qnorm(base_1, mean = 0, sd = std_avp) - b0
-b2_0 = qnorm(trend + base_0, mean = 0, sd = std_avp) - b0
-b2_1 = qnorm(trend + base_1, mean = 0, sd = std_avp) - b0 - b1
-b3 = qnorm( pnorm(b0+b1+b2_1, mean = 0, sd = std_avp) + ATT , mean = 0, sd = std_avp) - (b0 + b1 + b2_1)
-
-
-estimator_comp <- TWFE_expost(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v)
-
-summary_coeff <- estimator_comp$summary_long %>%
-  mutate_at(vars(bias), as.numeric)
-
-summary_wide  <- summary_coeff %>%
-  group_by(model)%>%
-  summarise(RMSE = rmse(bias, 0),
-            q25 = quantile(bias, probs = .25),
-            q75 = quantile(bias, probs = .75),
-            Bias = mean(bias))
-
-export(summary_wide, "unbiased_dgp/results/twfe_comp.rds")
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ### demonstration that TWFE bias is equal to pre-treatment difference
