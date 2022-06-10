@@ -12,10 +12,10 @@ This paper does not involve analysis of external data. The only data are generat
 Instructions to Replicators
 ---------------------------
 
-- Run `unbiased_dgp/map_figures.R`. Image file `landscape_map.png` will be output to `unbiased_dgp/figs`. Copy `landscape_map.png` into `paper/figs`. This is the lone figure used by `paper/defor_metrics_draft.Rmd`.
+- Run `unbiased_dgp/map_figures.R`. Image file `landscape_map.png` will be output to `unbiased_dgp/figs`. Copy `unbiased_dgp/figs` into `paper/figs`. This is the lone figure used by `paper/defor_metrics_draft.Rmd`.
 
-- Run `unbiased_dgp/analysis_main.R`. Results files will be output to `unbiased_dgp/results`. Copy `unbiased_dgp/results` to `paper/results`
+- Run `unbiased_dgp/analysis_main.R`. Results files will be output to `unbiased_dgp/results`. Copy `unbiased_dgp/results` to `paper/results`.
 
-- Run `multigroup_dgp/analysis_multiple_gt.R`. Results files will be output to `unbiased_dgp/results_multi`. Copy files in `unbiased_dgp/results_multi` to `paper/results`. `paper/results`should now contain _ files. 
+- Run `multigroup_dgp/analysis_multiple_gt.R`. Results files will be output to `unbiased_dgp/results_multi`. Copy `unbiased_dgp/results_multi` to `paper/results_multi`.
 
 - Replicators should now be able to knit `paper/defor_metrics_draft.Rmd` into the paper pdf. 
