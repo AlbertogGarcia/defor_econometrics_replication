@@ -66,6 +66,8 @@ library(tidyverse)
 library(Metrics)
 library(reshape2)
 library(patchwork)
+library(grid)
+library(gridExtra)
 
 source(here::here('paper', 'schart.R'))
 
@@ -1101,7 +1103,7 @@ The treatment effect now varies across properties, and properties with greater a
 
 * $ATT_{property} = \frac{1}{n_{v:D_v=1}} \sum_{v:D_v=1}(\frac{1}{n_{iv}} \sum_{i=1}^{n_{iv}}(y_{iv2}(1) - y_{iv2}(0)))$, where $n_{v:D_v=1}$ is the number of treated properties in the simulated landscape; and $n_{iv}$ is the number of pixels in property $v$.
 
-Note that neither $ATT_{ls}$ nor $ATT_{property}$ can be estimated directly, because $y(0)_{ivt}$ is not observed for treated units after treatment. 
+Note that neither $ATT_{ls}$ nor $ATT_{property}$ can be estimated directly, because $y(0)_{iv2}$ is not observed for treated units. 
 
 ```{r pweight, include= FALSE}
 
@@ -1131,7 +1133,7 @@ p_ATT <- round(mean(summary$p_ATT), digits = 4)
 Because the treatment is more effective in properties of a smaller size, the treatment effect for the average property is greater than the average treatment effect experienced across the landscape. Figure \@ref(fig:pweight-fig) shows the sample $ATT$s for both the property and landscape. In our simulation, $ATT_{property}$ = `r p_ATT`, and $ATT_{property}$ = `r ls_ATT`. The property-level TWFE regression recovers the $ATT$ relative to the characteristic property when area weights are not used and the landscape scale $ATT$ when they are used. Researchers should use these area weights when they are interested in the impact of the intervention across the landscape. In cases where the researcher is interested in how an intervention affects incentives at the property level, using these weights may not be necessary.
 
 
-```{r pweight-fig, fig.align="center", results = FALSE, warning = FALSE, message = FALSE, fig.cap="Weighting recovers landscape scale interpretation", fig.pos='H', fig.width = 7, fig.height = 5, out.width= "100%", fig.show='hold'}
+```{r pweight-fig, fig.align="center", results = FALSE, warning = FALSE, message = FALSE, fig.cap="Weighting recovers landscape scale interpretation", fig.pos='H', fig.width = 8, fig.height = 5, out.width= "100%", fig.show='hold'}
 
 df_summary <- summary 
 
@@ -1160,7 +1162,7 @@ index.ci <- match(c("q05","q95"), names(select_results))
 ylim <- c(-0.018, -0.006)
 #Create the plot
 
-schart(select_results,labels, ylim = ylim, index.ci=index.ci, col.est = c(palette$dark, palette$red),
+schart(select_results,labels, ylim = ylim,leftmargin = 12, heights = c(4, 2), index.ci=index.ci, col.est = c(palette$dark, palette$red),
        bg.dot=c(palette$dark, "grey95", "white", palette$red),
        col.dot=c(palette$dark, "grey95", "white", palette$red)
        , ylab="                              "
@@ -1204,15 +1206,17 @@ ggplot(data=rate_landscape, aes(x=year, y=defor, colour=Group))+
   theme(#legend.key = element_rect(color = NA, fill = NA),
         legend.key.size = unit(.5, "cm"),
         legend.title.align = 0.5,
-        text = element_text(size = 14))
+        text = element_text(size = 14),
+        panel.border = element_rect(colour = "black", fill=NA, size=1))
   
 
 ```
 
 The left panel of Figure \@ref(fig:multiGT) shows that the estimators developed in @callaway2020, @gardner2021, and @borusyak2021 suffer from similar bias to TWFE regressions with pixel unit fixed effects if the pixel is used as the unit of analysis. All methods yield a treatment effect greater than or equal to 0 in all post-treatment periods, reflecting the fact that pre-treatment period deforestation rates are unaccounted for by the estimators. This is particularly  clear in the @callaway2020 estimator in which pre-treatment periods are all precisely zero, indicating that the estimator could only compute treatment effects using pixels that survived until the end of the observation period. The right panel of Figure \@ref(fig:multiGT) shows that this bias is eliminated when one uses an aggregated unit of analysis with binary treatment (e.g., county). We do not include pixel-level TWFE regressions with spatially aggregated fixed effects, because most recently developed estimators do not allow for a comparable implementation. Therefore if the researcher wants to obtain a landscape-scale interpretation, they must use an aggregated grid cell or weight the regression by the unit area. 
 
-```{r multiGT, results = FALSE, warning = FALSE, out.width="100%", fig.cap="New estimators, similar to TWFE regressions with pixel unit fixed effects, cannot identify ATT with pixel as unit of analysis", fig.pos='H', fig.width = 10, fig.height = 6, fig.show='hold'}
+```{r multiGT-gen, include = FALSE} 
 #knitr::include_graphics(c("figs/pixel_multiGT.png", "figs/county_multiGT.png"))
+truth <- 
 
 county_es <- readRDS("results/county_es.rds")
 pixel_es <- readRDS("results/pixel_es.rds")%>%
@@ -1256,7 +1260,7 @@ ylim = c(ylimmin, ylimmax)
 p1 <- ggplot(out_pix, ggplot2::aes(x = term, y = estimate, color = estimator, ymin = ci_lower, ymax = ci_upper)) +
   geom_point(position = position, size = 2.6) +
   geom_errorbar(position = position) +
-  geom_vline(xintercept = -0.5, linetype = "dashed") +
+  geom_vline(xintercept = -0.5, linetype = "dashed", size = 0.25) +
   labs(y = "Mean point estimate", x = "Event Time", color = "Estimator") +
   theme_minimal(base_size = 14) +
   scale_color_manual(values = color_scale) +
@@ -1264,13 +1268,13 @@ p1 <- ggplot(out_pix, ggplot2::aes(x = term, y = estimate, color = estimator, ym
       color = ggplot2::guide_legend(title.position = "top", nrow = 2)
     ) +
   ylim(ylimmin, ylimmax)+
-  ggtitle("Pixel as unit of analysis")+
+  ggtitle(" Pixel as unit of analysis")+
   theme(plot.title = element_text(hjust = 0))
 
 p2 <- ggplot(out_county, ggplot2::aes(x = term, y = estimate, color = estimator, ymin = ci_lower, ymax = ci_upper)) +
   geom_point(position = position, size = 2.6) +
   geom_errorbar(position = position) +
-  geom_vline(xintercept = -0.5, linetype = "dashed") +
+  geom_vline(xintercept = -0.5, linetype = "dashed", size = 0.25) +
   labs(y = "Mean point estimate", x = "Event Time", color = "Estimator") +
   theme_minimal(base_size = 14) +
   scale_color_manual(values = color_scale) +
@@ -1292,8 +1296,14 @@ p4 <- ggplot(data.frame(l = p1$labels$y, x = 1, y = 1)) +
 p1$labels$y <- p2$labels$y <- " "
 
 combined <- p4 + (p1 | p2) & theme(legend.position = "bottom")
+```
 
-combined + plot_layout(widths = c(1, 25), guides = "collect")
+```{r multiGT, results = FALSE, warning = FALSE, out.width="100%", fig.cap="New estimators, similar to TWFE regressions with pixel unit fixed effects, cannot identify ATT with pixel as unit of analysis", fig.pos='H', fig.width = 9, fig.height = 6, fig.show='hold'}
+
+combined + plot_layout(widths = c(1, 25), guides = "collect") 
+grid.rect(x= unit(0.56, "npc"), y = unit(0.605, "npc"), width = .86, height = .625, gp = gpar(lwd = 2, col = "black", fill = NA))
+grid.rect(x= unit(0.56, "npc"), y = unit(0.605, "npc"), width = 0, height = .625, gp = gpar(lwd = 2, col = "black", fill = NA))
+
 
 ```
 
@@ -1316,15 +1326,15 @@ ggplot(data=het_landscape, aes(x=year, y=defor, colour=Group))+
   theme(#legend.key = element_rect(color = NA, fill = NA),
         legend.key.size = unit(.5, "cm"),
         legend.title.align = 0.5,
-        text = element_text(size = 14))
+        text = element_text(size = 14),
+        panel.border = element_rect(colour = "black", fill=NA, size=1))
   
 
 ```
 
 Figure \@ref(fig:multiGT2) shows the event study estimates produced by each of the three estimators as well as the "truth" for both pixel and county-level analyses. Again, none of the estimators yield the $ATT$ with pixel-level analyses. In the county-level estimates, we see that the newer estimators slightly outperform the TWFE estimator. This is evidence of the weighting that has become a concern with TWFE estimators in these type of settings. While TWFE estimates represent a weighted average of all possible 2x2 DID estimates, the weights may not always be intuitive [@goodman-bacon2021]. In contrast, newer estimators do not suffer from this concern. 
 
-```{r multiGT2, fig.cap="TWFE regressions suffer from weighting concerns when treatment effects vary across groups and through time", results = FALSE, warning = FALSE, out.width="100%", fig.pos='H', fig.width = 10, fig.height = 6, fig.show='hold'}
-# knitr::include_graphics(c("figs/pixel_multiGT2.png","figs/county_multiGT2.png"))
+```{r multiGT2-gen, include = FALSE}
 
 county_es <- readRDS("results/county_es_hetTE.rds")
 pixel_es <- readRDS("results/pixel_es_heterogTE.rds")%>%
@@ -1368,7 +1378,7 @@ ylim = c(ylimmin, ylimmax)
 p1 <- ggplot(out_pix, ggplot2::aes(x = term, y = estimate, color = estimator, ymin = ci_lower, ymax = ci_upper)) +
   geom_point(position = position, size = 2.6) +
   geom_errorbar(position = position) +
-  geom_vline(xintercept = -0.5, linetype = "dashed") +
+  geom_vline(xintercept = -0.5, linetype = "dashed", size = 0.25) +
   labs(y = "Mean point estimate", x = "Event Time", color = "Estimator") +
   theme_minimal(base_size = 14) +
   scale_color_manual(values = color_scale) +
@@ -1376,13 +1386,14 @@ p1 <- ggplot(out_pix, ggplot2::aes(x = term, y = estimate, color = estimator, ym
       color = ggplot2::guide_legend(title.position = "top", nrow = 2)
     ) +
   ylim(ylimmin, ylimmax)+
-  ggtitle("Pixel as unit of analysis")+
-  theme(plot.title = element_text(hjust = 0))
+  ggtitle(" Pixel as unit of analysis")+
+  theme(plot.title = element_text(hjust = 0))+
+  scale_y_continuous(breaks = c(-0.02, 0, 0.02, 0.04))
 
 p2 <- ggplot(out_county, ggplot2::aes(x = term, y = estimate, color = estimator, ymin = ci_lower, ymax = ci_upper)) +
   geom_point(position = position, size = 2.6) +
   geom_errorbar(position = position) +
-  geom_vline(xintercept = -0.5, linetype = "dashed") +
+  geom_vline(xintercept = -0.5, linetype = "dashed", size = 0.25) +
   labs(y = "Mean point estimate", x = "Event Time", color = "Estimator") +
   theme_minimal(base_size = 14) +
   scale_color_manual(values = color_scale) +
@@ -1404,8 +1415,13 @@ p4 <- ggplot(data.frame(l = p1$labels$y, x = 1, y = 1)) +
 p1$labels$y <- p2$labels$y <- " "
 
 combined <- p4 + (p1 | p2) & theme(legend.position = "bottom")
+```
+
+```{r multiGT2, fig.cap="TWFE regressions suffer from weighting concerns when treatment effects vary across groups and through time", results = FALSE, warning = FALSE, out.width="100%", fig.pos='H', fig.width = 9, fig.height = 6, fig.show='hold'}
 
 combined + plot_layout(widths = c(1, 25), guides = "collect")
+grid.rect(x= unit(0.56, "npc"), y = unit(0.605, "npc"), width = .86, height = .625, gp = gpar(lwd = 2, col = "black", fill = NA))
+grid.rect(x= unit(0.56, "npc"), y = unit(0.605, "npc"), width = 0, height = .625, gp = gpar(lwd = 2, col = "black", fill = NA))
 
 ```
 

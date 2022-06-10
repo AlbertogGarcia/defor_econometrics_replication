@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (MiKTeX 2.9.7380 64-bit) (preloaded format=xelatex 2020.8.14)  8 JUN 2022 14:42
+This is XeTeX, Version 3.14159265-2.6-0.999992 (MiKTeX 2.9.7380 64-bit) (preloaded format=xelatex 2020.8.14)  10 JUN 2022 10:09
 entering extended mode
 **./defor_metrics_draft.tex
 (defor_metrics_draft.tex
@@ -1214,12 +1214,12 @@ le (type pdf)
 File: defor_metrics_draft_files/figure-latex/multiGT2-1.pdf Graphic file (type 
 pdf)
 <use defor_metrics_draft_files/figure-latex/multiGT2-1.pdf>
-[20] [21] [22] [23] [24] [25]
+[20] [21] [22] [23] [24] [25] [26]
 Overfull \hbox (34.135pt too wide) in paragraph at lines 884--895
  [][] 
  []
 
-[26]
+
 Overfull \hbox (10.961pt too wide) detected at line 921
 []
  []
