@@ -1,4 +1,3 @@
-source(here::here('multigroup_dgp', 'multipleGT.R'))
 source(here::here('multigroup_dgp', 'multipleGT_agg.R'))
 source(here::here('multigroup_dgp', 'multipleGT_pix.R'))
 source(here::here('multigroup_dgp', 'trends_fcn.R'))
