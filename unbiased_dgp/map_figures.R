@@ -1,4 +1,13 @@
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Authors: Alberto Garcia and Robert Heilmayr
+# Paper: Conservation Impact Evaluation Using Remotely Sensed Data
+# Date: 6/12/22
+# Purpose: Create map of example landscape (Figure 1)
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Import packages --------------------------------------------------------
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 library(patchwork)
 library(tidyverse)
 library(ggplot2)
@@ -223,7 +232,7 @@ county_plot %>%
 
 ggsave(county_plot %>% 
          format_fig(),
-       path = "unbiased_dgp/figs",
+       path = "paper/figs",
        filename = "landscape_map.png", 
        width = 7,
        height = 4)
