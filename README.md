@@ -1,7 +1,8 @@
 Overview
 --------
 
-The code in this replication package constructs the analysis from Garcia and Heilmayr, 2022. Three main files run all of the code to generate the data for the 1 figure and 16 results files needed to run the R markdown file to generate the paper. 
+The code in this replication package reproduces all results from Garcia and Heilmayr, 2022. Three main scripts generate the data for the 1 figure and 16 results files needed to knit the paper (`paper/defor_metrics_draft.Rmd`). 
+
 
 Data Availability and Provenance Statements
 ----------------------------
@@ -9,8 +10,11 @@ Data Availability and Provenance Statements
 This paper does not involve analysis of external data. The only data are generated via simulation).
 
 
-Instructions to Replicators
+
+Instructions for replication
 ---------------------------
+
+- Set up compute environment: Open `defor_econometrics_replication.Rproj`. Renv will be automatically installed. Run renv::restore() to pull package versions used for original paper.
 
 - Run `unbiased_dgp/map_figures.R`. Image file `landscape_map.png` will be output to `unbiased_dgp/figs`. Copy `unbiased_dgp/figs` into `paper/figs`. This is the lone figure used by `paper/defor_metrics_draft.Rmd`.
 
