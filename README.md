@@ -1,13 +1,13 @@
 Overview
 --------
 
-The code in this replication package reproduces all results from Garcia and Heilmayr, 2022. Three main scripts generate the data for the 1 figure and 16 results files needed to knit the paper (`paper/defor_metrics_draft.Rmd`). 
+The code in this replication package reproduces all results from Garcia and Heilmayr, 2022. Three main scripts generate all input files (1 figure and 16 results files) needed to knit the paper (`paper/defor_metrics_draft.Rmd`). 
 
 
 Data Availability and Provenance Statements
 ----------------------------
 
-This paper does not involve analysis of external data. The only data are generated via simulation).
+This paper does not involve analysis of external data. All data are generated via simulation.
 
 
 
