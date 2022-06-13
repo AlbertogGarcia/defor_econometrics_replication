@@ -246,20 +246,6 @@
       "Hash": "1012f2033c32d595e1a16bee3bb0b3e5",
       "Requirements": []
     },
-    "betareg": {
-      "Package": "betareg",
-      "Version": "3.1-4",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "91e7a98d41aa25ea3909198c2b482ddd",
-      "Requirements": [
-        "Formula",
-        "flexmix",
-        "lmtest",
-        "modeltools",
-        "sandwich"
-      ]
-    },
     "blob": {
       "Package": "blob",
       "Version": "1.2.1",
@@ -731,18 +717,6 @@
         "nlme",
         "numDeriv",
         "sandwich"
-      ]
-    },
-    "flexmix": {
-      "Package": "flexmix",
-      "Version": "2.3-17",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "4e331c6d2ed36e62b25572ab30a547d6",
-      "Requirements": [
-        "lattice",
-        "modeltools",
-        "nnet"
       ]
     },
     "forcats": {
@@ -1249,18 +1223,6 @@
         "sp"
       ]
     },
-    "margins": {
-      "Package": "margins",
-      "Version": "0.3.26",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "a7719c7b7989be666f8049e7d087fbea",
-      "Requirements": [
-        "MASS",
-        "data.table",
-        "prediction"
-      ]
-    },
     "markdown": {
       "Package": "markdown",
       "Version": "1.1",
@@ -1288,19 +1250,6 @@
       "Hash": "86dd402728e96ac53f6e3d28c210103b",
       "Requirements": [
         "miscTools",
-        "sandwich"
-      ]
-    },
-    "mfx": {
-      "Package": "mfx",
-      "Version": "1.2-2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "aed678bec808c2914bfbc08678c53f64",
-      "Requirements": [
-        "MASS",
-        "betareg",
-        "lmtest",
         "sandwich"
       ]
     },
@@ -1359,14 +1308,6 @@
         "tidyselect",
         "vctrs"
       ]
-    },
-    "modeltools": {
-      "Package": "modeltools",
-      "Version": "0.2-23",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "f5a957c02222589bdf625a67be68b2a9",
-      "Requirements": []
     },
     "msm": {
       "Package": "msm",
@@ -1453,14 +1394,6 @@
         "stringi",
         "zip"
       ]
-    },
-    "pBrackets": {
-      "Package": "pBrackets",
-      "Version": "1.0.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "aef35aaca2a35b8704ce6d2b58cf42f1",
-      "Requirements": []
     },
     "parallelly": {
       "Package": "parallelly",
@@ -1575,16 +1508,6 @@
       "Repository": "CRAN",
       "Hash": "c396592ecfe9e75cee1013533efafe34",
       "Requirements": []
-    },
-    "prediction": {
-      "Package": "prediction",
-      "Version": "0.3.14",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "0711ff44a086709b9b7441267ab303bf",
-      "Requirements": [
-        "data.table"
-      ]
     },
     "prettyunits": {
       "Package": "prettyunits",
