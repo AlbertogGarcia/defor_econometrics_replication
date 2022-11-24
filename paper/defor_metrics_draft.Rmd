@@ -54,34 +54,6 @@ nocite:
 
 # Tentative assigning of list items:
 
-## FOR ALBERT:
-
-## FOR ROBERT
-
-## COMPLETED:
-# - Figures 2, 3, etc: Rename "HE estimator" to match new framing of section 2.3
-# - Update notation in 2.3.2 to emphasize that the final ATT calculation relies on an estimated mean  
-# - Figure 2: Remove label for column 11
-# - Figure 4: Labels should be same font size as other figures
-# - Figures 7 and 9: Make these figures smaller, font sizes / labels / line sizes should be comparable to other figures
-# - Figure 8: Update plots to share y-axis and legend; update to consistent color palette with rest of paper
-# - Better integrate table 2 into description of Monte Carlo setup (section 3). This used to be in Section 6, but I think it fits better here?
-# - Rewrite last paragraph before conclusion (discussion of figure 10). Currently a bit hard to follow
-# - Double check description of new DID literature - see comment addressed to you on ~line 1159
-# - Rewrite last paragraph before conclusion (discussion of figure 10). Currently a bit hard to follow
-# - Fill in missing values (marked by XX) in section 3.1. See note on ~line 285
-# - Figure 6: Add y-axis labels, update prior sentence with actual average property effect size
-# - Table 1: Add new example of survival analysis? 
-# - Section 2.3 modifications for "proportional hazards"
-# - Re-write last paragraph of selection bias section. See comment on ~line 497. This paragraph seemed worth just omitting
-# - Read/edit updated section 2.3 and 6.2
-# - Robert needs to revise section 8 (conclusion)
-# - Tweak background color (currently weird off white used for presentation), grid size (small), and margins (too big on top and bottom) for figure 1
-# - Adjust figure 9
-# ~ Line 537: Need to add a sentence or two with a so-what for the selection bias section.
-# - Double check all cross-references
-# Figure 12: Should adjust spacing so labels don't get cut off 
-# ~ Line 513: Confirm text doesn't match figure. Update
 
 ---
 
@@ -119,13 +91,8 @@ palette <- list("white" = "#FAFAFA",
 # Abstract {-}
 The application of econometric methods of causal inference to remotely-sensed measurements of land use change has yielded important evidence detailing the impacts of conservation interventions. However, these applications come with new challenges. Using Monte Carlo simulations and analytical proofs, we demonstrate that many of the panel econometric models employed for conservation impact evaluation are biased - the significance, magnitude and even direction of estimated effects from many studies are likely incorrect. These errors threaten to undermine the evidence base that underpins conservation policy adoption and design. We review the methods in this burgeoning literature and develop guidance for the design of econometric models quantifying conservation policy effectiveness. 
 
-<!-- @baehr2021, @alix-garcia2017, @alix-garcia2018, @anderson2018, @araujo2009, @arriagada2012, @baehr2021, @baylis2012, @benyishay2017, @blackman2017, @blackman2015, @blackman2018, @busch2015, @butsic2017a, @carlson2018, @heilmayr2016, @heilmayr2020, @herrera2019, @holland2017, @jones2017, @koch, @panlasigui2018, @nolte2017,  @pfaff1999, @sales2022, @sanchez-azofeifa2007, @shah2015, @sims2017, @tabor2017, @wendland2015 -->
-
 # Introduction
 Policymakers often need to understand the causal impacts of conservation interventions. Do marine protected areas stop unsustainable harvesting of fish? Can payments for ecosystem services encourage lasting reforestation? While randomized experiments are the gold standard for the identification of causal relationships [@edwards2020; @jayachandran2017], conservation often poses questions that are prohibitively expensive, unethical or impossible to pursue through experimentation. In such settings, a growing portfolio of statistical techniques enable researchers to draw causal conclusions using observational data [@larsen2019]. Increasingly, these econometric approaches to impact evaluation are being used to disentangle the causal relationships that underpin conservation decisionmaking [@butsic2017; @baylis2016; @williams2020]. These econometric methods can generate estimates of an intervention's impact by comparing observed outcomes to a statistical counterfactual of what would have happened in the absence of an intervention [@ferraro2009; @meyfroidt2016; @ferraro2019; @ribas2020].
-
-
-<!-- When successful, these methods can provide answers that improve the way society confronts environmental challenges. However, inappropriate methods can yield misleading conclusions and, as a result, risk diverting scarce financial and political resources from the most effective conservation strategies. -->
 
 Importantly, these econometric methods account for the non-random assignment of interventions that often confound identification of causal relationships in conservation. For example, a low rate of deforestation within a remote protected area may reflect the protected area's effectiveness, or it may be indicative of the remote location's poor suitability for agricultural development [@andam2008; @pfaff2009]. To build valid counterfactuals in the face of non-random selection, researchers frequently build upon spatial, panel data to observe changes in outcomes across treated and control units after the adoption of an intervention [@blackman2013]. When a rigorous research design is applied to panel data, observational studies can yield conclusions that are comparable to what a researcher would discover if they were able to run a randomized experiment [@ferraro2017].
 
