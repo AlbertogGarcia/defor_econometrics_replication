@@ -8,6 +8,8 @@ library(tictoc)
 library(fixest)
 source(here::here('unbiased_dgp', 'grid_landscape.R'))
 
+join <- fabricatr::join_using
+
 #begin function
 outcome_fcn <- function(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a = 0.1, std_v = 0.5, cellsize){
   
@@ -17,7 +19,8 @@ outcome_fcn <- function(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a = 0.1, std
   #N_treat = gridscape$N_treat    
   ATT <- pnorm(b0+b1+b2_1+b3, 0, (std_a^2+std_v^2)^.5) - pnorm(b0+b1+b2_1, 0, (std_a^2+std_v^2)^.5)
   
-  pixloc <- pixloc_df
+  pixloc <- pixloc_df %>%
+    mutate_at(vars(pixels), as.character)
   
   coeffmatrix <- matrix(nrow = n, ncol = 3)
   
@@ -38,12 +41,24 @@ outcome_fcn <- function(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a = 0.1, std
       )
     )
     
+    panels$pixels <- gsub("(?<![0-9])0+", "", panels$pixels, perl = TRUE)
+    
+    panels <- panels %>%
+      inner_join(pixloc, by = c("pixels", "treat")) %>%
+      mutate(year = as.numeric(year),
+             y = (ystar > 0)*1 
+             )
+    
     #need to determine which year deforestation occurred
-    year_df <- subset(panels, select = c(pixels, year, y))
-    #year_df <- melt(year_df, id.vars = c("pixels", "y_it"), value.name = "year")
-    year_df <- dcast(year_df, pixels ~ year , value.var = "y")
+    year_df <- panels %>%
+      dplyr::select(pixels, year, y) %>%
+      #dcast(pixels ~ year , value.var = "y")
+      pivot_wider(names_from = year, values_from = y)
+    
     rownames(year_df) <- year_df$pixels
-    year_df <- subset(year_df, select = -c(pixels))
+    
+    year_df <- year_df %>%
+      dplyr::select(- pixels)
     
     #creating variable for the year a pixel is deforested
     not_defor <- rowSums(year_df)<1 *1
@@ -51,56 +66,41 @@ outcome_fcn <- function(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a = 0.1, std
     defor_df <- transform(year_df, defor_year = ifelse(not_defor==1, years*2+1, defor_year))
     defor_df <- tibble::rownames_to_column(defor_df)
     names(defor_df)[1] <- paste("pixels")
-    defor_df <- subset(defor_df, select = c(pixels, defor_year))
-    panels <- merge(defor_df, panels, by = "pixels")
     
-    
-    # creating three outcome variables for each possible situation
-    ### y: allows the outcome to switch between 0 and 1 across years
-    ### y_it: outcome is dropped in years after pixel is first deforested
-    ### defor: outcome is set to 1 in each year after the pixel is deforested
-    panels$year <- as.numeric(panels$year)
-    panels$indic <- (panels$year - panels$defor_year)
-    panels$defor <- ifelse(panels$indic > 0 , 1, panels$y)
-    panels <- subset(panels, select = -c(indic))
-    
-    panels$pixels <- as.numeric(gsub("(?<![0-9])0+", "", panels$pixels, perl = TRUE))
-    
+    panels <- defor_df %>%
+      dplyr::select(pixels, defor_year) %>%
+      inner_join(panels, by = "pixels") %>%
+      mutate_at(vars(pixels, year, defor_year), as.numeric)
     
     panels <- panels %>%
-      mutate(pixels = as.integer(pixels))%>%
-      inner_join(pixloc, by = c("pixels", "treat"))
+      mutate(indic = year - defor_year,
+             defor = ifelse(indic > 0, 1, y),
+             y_it = ifelse(indic > 0, NA, y))
     
     
-    # aggregate up to county in each year
+    # Aggregate to grid level
     gridlevel_df <- as.data.frame(panels) %>%
       dplyr::group_by(grid, year, post) %>%
       dplyr::summarise(defor = mean(defor),
-                       treat = mean(treat))%>%
+                       treat = mean(treat)) %>%
       ungroup()
     
     
-    gridlevel_df <- gridlevel_df[order(gridlevel_df$grid, gridlevel_df$year),]
-    gridlevel_df <- slide(gridlevel_df, Var = "defor", GroupVar = "grid", NewVar = "deforlag",
-                          slideBy = -1, reminder = FALSE)
+    gridlevel_df <- as.data.frame(gridlevel_df[order(gridlevel_df$grid, gridlevel_df$year),])%>%
+      group_by(grid)%>%
+      mutate(deforlag = lag(defor))%>%
+      ungroup%>%
+      mutate(forshare = 1 - defor,
+             forsharelag = 1 - deforlag)
     
-    ##### creating forested share variable #####
-    gridlevel_df$forshare <- 1 -  gridlevel_df$defor
-    gridlevel_df$forsharelag <- 1 -  gridlevel_df$deforlag
+    baseline_forshare <- gridlevel_df %>%
+      filter(year == min(year)) %>%
+      mutate(forshare0 = forshare)%>%
+      select(grid, forshare0)
     
-    #### create baseline defor and forshare vars 
-    #county level
-    year1 <- subset(gridlevel_df, year== 1)
-    colnames(year1)[colnames(year1)=="defor"] <- "defor0"
-    year1 <- subset(year1, select = c(grid, defor0))
-    #st_geometry(year1) <- NULL
-    gridlevel_df <-  gridlevel_df %>%
-      inner_join( year1, by = "grid") %>%
-      mutate(forshare0 = (1 - defor0))
-    
-    #generate outcome var
-    
+    #generate outcome vars
     gridlevel_df <- gridlevel_df %>%
+      left_join(baseline_forshare, by = "grid")%>%
       mutate(deforrate1 = (forsharelag - forshare) / forsharelag) %>%
       mutate(deforrate2 = (forsharelag - forshare) / forshare0) %>%
       mutate(deforrate3 = log(forsharelag / forshare))

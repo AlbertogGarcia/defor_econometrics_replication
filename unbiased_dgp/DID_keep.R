@@ -2,7 +2,6 @@
 library(clubSandwich)
 library(matrixStats)
 library(ggplot2)
-library(plm)
 library(Metrics)
 library(fixest)
 

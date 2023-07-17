@@ -2,7 +2,6 @@
 library(clubSandwich)
 library(matrixStats)
 library(ggplot2)
-library(plm)
 library(Metrics)
 library(fixest)
 source(here::here('unbiased_dgp', 'deforestation_DGP.R'))
@@ -13,7 +12,7 @@ TWFE_expost <- function(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a = 0.1, std
   
   #preallocate n x 4 matrix
   
-  n_mod = 8
+  n_mod = 10
   coeffmatrix <- matrix(nrow = n, ncol = n_mod)
   
   summ_row <- n_mod * n
@@ -34,6 +33,9 @@ TWFE_expost <- function(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a = 0.1, std
     final_panels <- panels %>%
       filter(year == max(year))
     
+    dropped_panels <- panels %>%
+      drop_na(y_it)
+    
     # drop first period
     ex_post_panels <- panels %>%
       filter(post == 1)
@@ -44,7 +46,8 @@ TWFE_expost <- function(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a = 0.1, std
       filter(max(drop) == 0)
     
     survivors_panel <- panels %>%
-      mutate(drop = ifelse(year == max(year) & is.na(y_it), 1, 0))%>%
+      mutate(drop = ifelse(year == max(year) & is.na(y_it)
+                           , 1, 0))%>%
       group_by(pixels)%>%
       filter(max(drop) == 0)
       
@@ -73,6 +76,12 @@ TWFE_expost <- function(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a = 0.1, std
     
     coeffmatrix[i, 8] <- feols(y_it ~  post*treat|year+pixels, data = survivors_panel_period1
     )$coefficients - ATT
+    
+    coeffmatrix[i, 9] <- tail(feols(y_it ~  post*treat, data = survivors_panel_period1
+    )$coefficients, n=1) - ATT
+    
+    coeffmatrix[i, 10] <- tail(feols(y ~  post*treat, data = dropped_panels
+    )$coefficients, n=1) - ATT
     
     firstcol = which(colnames(summary_long)=="iteration")
     lastcol = which(colnames(summary_long)=="bias")
@@ -125,7 +134,17 @@ TWFE_expost <- function(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a = 0.1, std
       coeffmatrix[i,8]
     )
     
-  
+    summary_long[i+8*n,c(firstcol:lastcol)] <- c(
+      i,
+      "TWFE on only post-treatment period",
+      coeffmatrix[i,9]
+    )
+    
+    summary_long[i+9*n,c(firstcol:lastcol)] <- c(
+      i,
+      "TWFE on latent outcome y",
+      coeffmatrix[i,10]
+    )
     
     #end for loop
     print(i)

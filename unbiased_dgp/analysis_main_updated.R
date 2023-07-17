@@ -1,34 +1,19 @@
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Authors: Alberto Garcia and Robert Heilmayr
-# Paper: Conservation Impact Evaluation Using Remotely Sensed Data
-# Date: 6/12/22
-# Purpose: Workflow to generate primary paper results
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Import external packages --------------------------------------------------------
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 library(tidyverse)
-library(tictoc)
 library(here)
-library(DeclareDesign)
-library(survival)
-library(ggplot2)
-library(dplyr)
-library(ggfortify)
-library(rio)
+library(data.table)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Parameterization 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-years = 6
-nobs = 150^2
-n = 500
 
-cellsize_small = 5
-cellsize_med = 10
-cellsize_large = 30
+years = 6 # years in each period (total years = years*2)
+nobs = 150^2
+n = 500 # number of monte carlo iterations
+
+
+cellsize_p = 10
+cellsize_c = 30
+cellsize_list <- c(cellsize_p, cellsize_c)
 ppoints = 225
 cpoints = 25
 
@@ -50,7 +35,7 @@ ATT = -.01
 ######## Baseline showing aggregation resolves pixel fixed effects issue
 ###############################################################################################################
 
-source(here::here('unbiased_dgp', 'specifications.R'))
+source(here::here('unbiased_dgp', 'montecarlo_all_specifications.R'))
 
 std_avp = (std_a^2+std_v^2+std_p^2)^.5
 b0 = qnorm(base_0, mean = 0, sd = std_avp)
@@ -59,13 +44,17 @@ b2_0 = qnorm(trend + base_0, mean = 0, sd = std_avp) - b0
 b2_1 = qnorm(trend + base_1, mean = 0, sd = std_avp) - b0 - b1
 b3 = qnorm( pnorm(b0+b1+b2_1, mean = 0, sd = std_avp) + ATT , mean = 0, sd = std_avp) - (b0 + b1 + b2_1)
 
+
 set.seed(0930)
 # summary function that estimates all of the different specifications
-aggregation <- specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p, std_c = 0.0, cellsize_small, cellsize_med, cellsize_large, ppoints, cpoints, nestedprops = FALSE, proptreatassign = FALSE)
+aggregation <- montecarlo_all_specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p, 
+                                             cellsize_list, ppoints, cpoints, 
+                                             min_psize = years*2,
+                                             nestedprops = FALSE, proptreatassign = FALSE)
 
-summary_long <- aggregation$summary_long
+library(rio)
+export(aggregation, here::here("paper", "results", "results_aggregation.rds"))
 
-export(summary_long, "paper/results/summary_long.rds")
 
 ###############################################################################################################
 ######## Introduction pixel level unobservables, which impact non-random selection
@@ -82,11 +71,12 @@ b2_1 = qnorm(trend + base_1, mean = 0, sd = std_avp) - b0 - b1
 b3 = qnorm( pnorm(b0+b1+b2_1, mean = 0, sd = std_avp) + ATT , mean = 0, sd = std_avp) - (b0 + b1 + b2_1)
 
 # summary function that estimates all of the different specifications
-aggregation_0 <- specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p, std_c = 0.0, cellsize_small, cellsize_med, cellsize_large, ppoints, cpoints, nestedprops = FALSE, proptreatassign = FALSE)
-summary_long_0 <- aggregation_0$summary_long 
+aggregation_0 <- montecarlo_all_specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p,
+                                               cellsize_list, ppoints, cpoints, 
+                                               min_psize = years*2,
+                                               nestedprops = FALSE, proptreatassign = FALSE)
 
-export(summary_long_0, "paper/results/summary_selection.rds")
-
+export(aggregation_0, here::here("paper", "results", "results_selection.rds"))
 ###############################################################################################################
 ######## Adding in property level disturbances
 ###############################################################################################################
@@ -102,8 +92,10 @@ b2_0 = qnorm(trend + base_0, mean = 0, sd = std_avp) - b0
 b2_1 = qnorm(trend + base_1, mean = 0, sd = std_avp) - b0 - b1
 b3 = qnorm( pnorm(b0+b1+b2_1, mean = 0, sd = std_avp) + ATT , mean = 0, sd = std_avp) - (b0 + b1 + b2_1)
 
-aggregation_1 <- specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p, std_c = 0.0, cellsize_small, cellsize_med, cellsize_large, ppoints, cpoints, nestedprops = FALSE, proptreatassign = FALSE)
-summary_long_1 <- aggregation_1$summary_long
+aggregation_1 <- montecarlo_all_specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p,
+                                               cellsize_list, ppoints, cpoints, 
+                                               min_psize = years*2,
+                                               nestedprops = FALSE, proptreatassign = FALSE)
 
 ##### 0.2
 std_p = 0.2
@@ -118,8 +110,10 @@ b3 = qnorm( pnorm(b0+b1+b2_1, mean = 0, sd = std_avp) + ATT , mean = 0, sd = std
 
 #ATT = pnorm(b0+b1+b2_1+b3, 0, (std_a^2+std_v^2 )^.5) - pnorm(b0+b1+b2_1, 0, (std_a^2+std_v^2 )^.5)
 
-aggregation_2 <- specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p, std_c = 0.0, cellsize_small, cellsize_med, cellsize_large, ppoints, cpoints, nestedprops = FALSE, proptreatassign = FALSE)
-summary_long_2 <- aggregation_2$summary_long
+aggregation_2 <- montecarlo_all_specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p,
+                                               cellsize_list, ppoints, cpoints, 
+                                               min_psize = years*2,
+                                               nestedprops = FALSE, proptreatassign = FALSE)
 
 
 #### 0.3
@@ -132,17 +126,20 @@ b2_0 = qnorm(trend + base_0, mean = 0, sd = std_avp) - b0
 b2_1 = qnorm(trend + base_1, mean = 0, sd = std_avp) - b0 - b1
 b3 = qnorm( pnorm(b0+b1+b2_1, mean = 0, sd = std_avp) + ATT , mean = 0, sd = std_avp) - (b0 + b1 + b2_1)
 
-aggregation_3 <- specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p, std_c = 0.0, cellsize_small, cellsize_med, cellsize_large, ppoints, cpoints, nestedprops = FALSE, proptreatassign = FALSE)
-summary_long_3 <- aggregation_3$summary_long
+aggregation_3 <- montecarlo_all_specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p,
+                                               cellsize_list, ppoints, cpoints, 
+                                               min_psize = years*2,
+                                               nestedprops = FALSE, proptreatassign = FALSE)
 
-summary_full <- rbind(summary_long_0, summary_long_1, summary_long_2, summary_long_3)
+results_full <- rbind(aggregation_0, aggregation_1, aggregation_2, aggregation_3)
 
-export(summary_full, "paper/results/summary_full.rds")
+export(results_full, here::here("paper", "results", "results_full.rds"))
 
 
 ###############################################################################################################
 ######## alternative parameterization
 ###############################################################################################################
+
 std_p = 0.3
 std_a = 0.1
 
@@ -159,13 +156,13 @@ b2_0 = qnorm(trend + base_0, mean = 0, sd = std_avp) - b0
 b2_1 = qnorm(trend + base_1, mean = 0, sd = std_avp) - b0 - b1
 b3 = qnorm( pnorm(b0+b1+b2_1, mean = 0, sd = std_avp) + ATT , mean = 0, sd = std_avp) - (b0 + b1 + b2_1)
 
-set.seed(0930)
-cellsize = cellsize_med
 
-aggregation_alt <- specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p, std_c = 0.0, cellsize_small, cellsize_med, cellsize_large, ppoints, cpoints, nestedprops = FALSE, proptreatassign = FALSE)
+aggregation_alt <- montecarlo_all_specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p,
+                                                 cellsize_list, ppoints, cpoints, 
+                                                 min_psize = years*2,
+                                                 nestedprops = FALSE, proptreatassign = FALSE)
 
-summary_long_alt <- aggregation_alt$summary_long
-export(summary_long_alt, "paper/results/summary_long_alt.rds")
+export(aggregation_alt, here::here("paper", "results", "results_alt.rds"))
 
 base_0 = .02
 base_1 = .05
@@ -180,14 +177,18 @@ b2_0 = qnorm(trend + base_0, mean = 0, sd = std_avp) - b0
 b2_1 = qnorm(trend + base_1, mean = 0, sd = std_avp) - b0 - b1
 b3 = qnorm( pnorm(b0+b1+b2_1, mean = 0, sd = std_avp) + ATT , mean = 0, sd = std_avp) - (b0 + b1 + b2_1)
 
-aggregation_alt2 <- specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p, std_c = 0.0, cellsize_small, cellsize_med, cellsize_large, ppoints, cpoints, nestedprops = FALSE, proptreatassign = FALSE)
+aggregation_alt2 <- montecarlo_all_specifications(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, std_p,
+                                                  cellsize_list, ppoints, cpoints, 
+                                                  min_psize = years*2,
+                                                  nestedprops = FALSE, proptreatassign = FALSE)
 
-summary_long_alt2 <- aggregation_alt2$summary_long
-export(summary_long_alt2, "paper/results/summary_long_alt2.rds")
+export(aggregation_alt2, here::here("paper", "results", "results_alt2.rds"))
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #### weighting analysis
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+set.seed(0930) # re-setting seed, so one can split runs up
 
 source(here::here('unbiased_dgp', 'heterogeneous_propertyarea.R'))
 
@@ -214,12 +215,14 @@ b1 = qnorm(base_1, mean = 0, sd = std_avp) - b0
 b2_0 = qnorm(trend + base_0, mean = 0, sd = std_avp) - b0
 b2_1 = qnorm(trend + base_1, mean = 0, sd = std_avp) - b0 - b1
 
-set.seed(0930)
-weights <- heterogeneous_propertyarea(n, nobs, years, b0, b1, b2_0, b2_1, std_a, std_v, std_p, std_b3, given_ATT = ATT, cellsize = 10, ppoints, cpoints)
-summary_pweights <- weights$summary_long
+
+cellsize = cellsize_p
+
+weights <- heterogeneous_propertyarea(n, nobs, years, b0, b1, b2_0, b2_1, std_a, std_v, std_p, std_b3, given_ATT = ATT, cellsize, ppoints, cpoints)
+results_pweights <- weights$summary_long
 
 library(rio)
-export(summary_pweights, "paper/results/summary_pweights.rds")
+export(results_pweights, here::here("paper", "results", "results_pweights.rds"))
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #### outcome analysis
@@ -246,29 +249,31 @@ b2_1 = qnorm(trend + base_1, mean = 0, sd = std_avp) - b0 - b1
 b3 = qnorm( pnorm(b0+b1+b2_1, mean = 0, sd = std_avp) + ATT , mean = 0, sd = std_avp) - (b0 + b1 + b2_1)
 
 set.seed(0930)
-outcomes <- outcome_fcn(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, cellsize = 10)
+outcomes <- outcome_fcn(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v, cellsize)
 outcome <- outcomes$coeff_bias
 
 library(rio)
-export(outcome, "paper/results/outcomes.rds")
+export(outcome, here::here("paper", "results", "results_outcomeFormula.rds"))
 
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #### DID keeping vs. dropping obs
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 source(here::here('unbiased_dgp', 'DID_keep.R'))
+
 set.seed(0930)
 keeps <- DID_keep(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v)
 keeps <- keeps$did_keeps
 
-export(keeps, "paper/results/keeps.rds")
+library(rio)
+export(keeps, here::here("paper", "results", "results_pixKeep.rds"))
 
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ######## show TWFE is equivalent to dropping all pixels deforested in first period
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 source(here::here('unbiased_dgp', 'TWFE_expost.R'))
-set.seed(0930)
 
 estimator_comp <- TWFE_expost(n, nobs, years, b0, b1, b2_0, b2_1, b3, std_a, std_v)
 
@@ -282,4 +287,4 @@ summary_wide  <- summary_coeff %>%
             q75 = quantile(bias, probs = .75),
             Bias = mean(bias))
 
-export(summary_wide, "paper/results/twfe_comp.rds")
+export(summary_wide, here::here("paper", "results", "twfe_comp_summary.rds"))
