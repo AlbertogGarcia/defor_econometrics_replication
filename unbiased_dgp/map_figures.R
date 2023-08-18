@@ -2,17 +2,16 @@
 library(patchwork)
 library(tidyverse)
 library(ggplot2)
-library(clubSandwich)
 library(matrixStats)
 library(ggplot2)
-library(plm)
 library(Metrics)
 library(DataCombine)
-library(dplyr)
 library(DeclareDesign)
 library(data.table)
-source(here::here("unbiased_dgp", "full_landscape.R"))
 library(ggpubr)
+
+source(here::here("unbiased_dgp", "full_landscape.R"))
+
 
 set.seed(6226)
 
