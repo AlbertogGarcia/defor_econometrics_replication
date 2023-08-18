@@ -16,6 +16,7 @@ library(ggpubr)
 
 set.seed(6226)
 
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Set parameters --------------------------------------------------------
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,7 +101,7 @@ panels <- fabricate(
   pixels = add_level(N = Nobs, a_i = rnorm(N, 0, std_a), treat = pixloc$treat),
   year = add_level(N = (years*2), nest = FALSE),
   obs = cross_levels(
-    by = join(pixels, year),
+    by = fabricatr::join_using(pixels, year),
     year = as.numeric(year),
     post = ifelse(year > years, 1, 0),
     v_it = rnorm(N, 0, std_v),
